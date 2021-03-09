@@ -14,6 +14,7 @@ class room {
   }
 
   room(String s) {
+    type = s;
     int turn = 0;
     if (s == "1" || s == "2" || s == "3") {
       turn = int(s);
@@ -26,7 +27,6 @@ class room {
       s = "02";
     }
     roomImg = loadImage(s + ".png");
-    type = s;
     for (int i = 0; i < w; i++) {
       for (int j = 0; j < h; j++) {
         color p = roomImg.get(i, j);
@@ -70,7 +70,7 @@ class room {
 
 
   void rotateRoom(int n) {
-    n += 1;
+    n = 4 - n;
     for (int x = 0; x < n; x++) {
       int[][] tempGrid = new int[h][w];
       for (int i = 0; i < w; i++) {
@@ -87,6 +87,17 @@ class room {
       for (int j = 0; j < 16; j++) {
         fill(grid[i][j] * 255);
         rect(i * dw, j * dw, dw, dh);
+      }
+    }
+  }
+
+  void show(float x, float y, float w, float h) {
+    float dw = w / 16;
+    float dh = h / 16;
+    for (int i = 0; i < 16; i++) {
+      for (int j = 0; j < 16; j++) {
+        fill(grid[i][j] * 255);
+        rect(x + i * dw, y + j * dw, dw, dh);
       }
     }
   }
@@ -113,16 +124,16 @@ class room {
 }
 
 
-String getMatchingRoom(String neighbors) {
+room getMatchingRoom(String neighbors) {
   ArrayList <String> potential = new ArrayList<String>();
   for (String type : types) {
     boolean pickRoom = true;
-    for (int i = 0; i < type.length(); i++) {
-      if (!neighbors.contains("" + type.charAt(i))) pickRoom = false;
+    for (int i = 0; i < neighbors.length(); i++) {
+      if (!type.contains("" + neighbors.charAt(i))) pickRoom = false;
     }
     if (pickRoom) potential.add(type);
   }
   String res = potential.get(floor(random(potential.size())));
   println(neighbors + ", " + res);
-  return res;
+  return new room(res);
 }

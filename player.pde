@@ -1,4 +1,3 @@
-
 class player {
   PVector pos = new PVector(0, 0);
   PVector vel = new PVector(0, 0);

@@ -21,6 +21,7 @@ class game {
     p1.update();
     p1.show();
     p1.showHitbox();
+    if (mousePressed) l1.drawRooms(currentRoom);
     fill(255, 0, 0);
     text(round(p1.currentRoom.x) + ", " + round(p1.currentRoom.y), 10, 10, 100);
 
@@ -39,7 +40,7 @@ class level {
     this.h = h;
     rooms = new room[w][h];
     map = new String[w][h];
-    createRooms("0123", 10, 10, 3);
+    createRooms();
 
     for (int i = 0; i < w; i++) {
       for (int j = 0; j < h; j++) {
@@ -50,40 +51,55 @@ class level {
     }
   }
 
-  void createRooms(String type, int x, int y, int n) {
-    if (rooms[x][y] != null || n <= 0) return;
-    rooms[x][y] = new room(type);
-    map[x][y] = type;
-    for (String s : rooms[x][y].type.split("")) {
-      int dir = int(s);
-      if (dir == 0) createRooms(getMatchingRoom(getNeighbors(x, y, dir, n)), x, y + 1, n - 1);
-      else if (dir == 1) createRooms(getMatchingRoom(getNeighbors(x, y, dir, n)), x + 1, y, n - 1);
-      else if (dir == 2) createRooms(getMatchingRoom(getNeighbors(x, y, dir, n)), x, y - 1, n - 1);
-      else if (dir == 3) createRooms(getMatchingRoom(getNeighbors(x, y, dir, n)), x - 1, y, n - 1);
+  void drawRooms(room currentRoom) {
+    background(0);
+    float dw = width / w;
+    float dh = height / h;
+    for (int i = 0; i < w; i++) {
+      for (int j = 0; j < h; j++) {
+        if (rooms[i][j] != null) rooms[i][j].show(i * dw, j * dh, dw, dh);
+        fill(200, 0, 0);
+        if (rooms[i][j] == currentRoom) circle((i + 0.5) * dw, (j + 0.5) * dh, dw / 5);
+      }
     }
   }
 
-  String getNeighbors(int x, int y, int dir, int n) {
-    String neighbors = "";
-    int offX = x;
-    int offY = y;
-    if (dir == 0) offY += 1;
-    else if (dir == 1) offX += 1;
-    else if (dir == 2) offY -= 1;
-    else if (dir == 3) offX -= 1;
-    if (n - 1 > 1) {
-      if (rooms[offX + 1][offY] != null)neighbors += "0";
-      if (rooms[offX][offY + 1] != null)neighbors += "1";
-      if (rooms[offX - 1][offY] != null)neighbors += "2";
-      if (rooms[offX][offY - 1] != null)neighbors += "3";
+
+  void createRooms() {
+    int n = 10;
+    int x = 10;
+    int y = 10;
+    rooms[x][y] = new room("1");
+    map[x][y] = "1";
+    int prevDir = -1;
+    int dir = -1;
+    for (int i = 0; i < n; i++) {
+      String roomType = rooms[x][y].type;
+      while (dir == prevDir)
+        dir = int("" + roomType.charAt(floor(random(roomType.length()))));
+      println(dir);
+      if (dir == 0) {
+        y -= 1;
+      } else if (dir == 1) {
+        x += 1;
+      } else if(dir == 2) {
+        y += 1;
+      } else if(dir == 3) {
+        x -= 1;
+      }
+      String newType = getNeighbors(x, y, dir);
+      rooms[x][y] = getMatchingRoom(newType);
+      map[x][y] = rooms[x][y].type;
+      prevDir = dir;
     }
-    String res = "";
-    for (int i = 0; i < neighbors.length(); i++) {
-      res += neighbors.charAt(i);
-      println("hello");
-    }
-    println(res);
-    res += ((dir + 3) % 4);
-    return res;
+  }
+
+  String getNeighbors(int x, int y, int dir) {
+    String optionalDir = "";
+    if (y - 1 >= 0) if (rooms[x][y - 1] == null) optionalDir += "0";
+    if (x + 1 < w) if (rooms[x + 1][y] == null) optionalDir += "1";
+    if (y + 1 < h) if (rooms[x][y + 1] == null) optionalDir += "2";
+    if (x - 1 >= 0) if (rooms[x - 1][y] == null) optionalDir += "3";
+    return optionalDir + ((dir + 3) % 4);
   }
 }
