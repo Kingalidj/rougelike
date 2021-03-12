@@ -53,3 +53,10 @@ boolean isOverlapping(hitbox h1, hitbox h2) {
   return (abs((h1.pos.x + h1.w/2) - (h2.pos.x + h2.w/2)) * 2 < (h1.w + h2.w)) &&
     (abs((h1.pos.y + h1.h/2) - (h2.pos.y + h2.h/2)) * 2 < (h1.h + h2.h));
 }
+
+boolean isOverlapping(hitbox h1, hitbox [] hArr) {
+  for (hitbox h : hArr) {
+    if (isOverlapping(h1, h))return true;
+  }
+  return false;
+}

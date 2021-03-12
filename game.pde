@@ -17,11 +17,20 @@ class game {
     for (hitbox hb : currentRoom.getHitboxes()) {
       p1.hitboxes.add(hb);
     }
-    currentRoom.show();
+
+    if (mousePressed) p1.shoot();
     p1.update();
+    PVector pos = new PVector(p1.pos.x, p1.pos.y);
+    currentRoom.show(pos);
     p1.show();
-    p1.showHitbox();
-    if (mousePressed) l1.drawRooms(currentRoom);
+    for (int i = 0; i < p1.bullets.size(); i++) {
+      bullet b = p1.bullets.get(i);
+      b.update();
+      if (b.pos.x > width || b.pos.y > height || b.pos.x < 0 || b.pos.y < 0) p1.bullets.remove(i);
+      if (isOverlapping(b.bulletHB, currentRoom.getHitboxes())) p1.bullets.remove(i);
+      b.show();
+    }
+    if (key == 'm') l1.drawRooms(currentRoom);
     fill(255, 0, 0);
     text(round(p1.currentRoom.x) + ", " + round(p1.currentRoom.y), 10, 10, 100);
 
@@ -42,13 +51,13 @@ class level {
     map = new String[w][h];
     createRooms();
 
-    for (int i = 0; i < w; i++) {
-      for (int j = 0; j < h; j++) {
-        if (map[i][j] == null)print("     ,");
-        else print(map[i][j] + ", ");
-      }
-      println();
-    }
+    //for (int i = 0; i < w; i++) {
+    //  for (int j = 0; j < h; j++) {
+    //    if (map[i][j] == null)print("     ,");
+    //    else print(map[i][j] + ", ");
+    //  }
+    //  println();
+    //}
   }
 
   void drawRooms(room currentRoom) {
@@ -92,6 +101,7 @@ class level {
       map[x][y] = rooms[x][y].type;
       prevDir = dir;
     }
+    rooms[10][10].addEnemy(width / 2, height / 2);
   }
 
   String getNeighbors(int x, int y, int dir) {

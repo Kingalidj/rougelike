@@ -1,4 +1,5 @@
 String [] types = {"0123", "01", "12", "23", "30", "02", "13", "0", "1", "2", "3"};
+
 class room {
   String type = "";
   PImage roomImg;
@@ -7,6 +8,7 @@ class room {
   float dw = width / w;
   float dh = height / h;
   int [][] grid = new int[w][h];
+  ArrayList<enemy> enemies = new ArrayList<enemy>();
   hitbox [][] hitboxes = new hitbox[w][h];
 
   room() {
@@ -40,6 +42,10 @@ class room {
     }
     rotateRoom(turn);
     createHitboxes();
+  }
+
+  void addEnemy(float x, float y) {
+    enemies.add(new enemy(x, y));
   }
 
   void loadRoom(String s) {
@@ -82,11 +88,24 @@ class room {
     }
   }
 
-  void show() {
+  void show(PVector playerPos) {
     for (int i = 0; i < 16; i++) {
       for (int j = 0; j < 16; j++) {
         fill(grid[i][j] * 255);
         rect(i * dw, j * dw, dw, dh);
+      }
+    }
+
+    for (enemy e : enemies) {
+      e.show();
+      PVector aim = playerPos.sub(e.pos).normalize();
+      e.shoot(aim);
+      for (int i = 0; i < e.bullets.size(); i++) {
+        bullet b = e.bullets.get(i);
+        if (b.pos.x > width || b.pos.y > height || b.pos.x < 0 || b.pos.y < 0) e.bullets.remove(i);
+        if (isOverlapping(b.bulletHB, this.getHitboxes())) e.bullets.remove(i);
+        b.update();
+        b.show();
       }
     }
   }
