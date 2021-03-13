@@ -73,10 +73,9 @@ class player {
   }
 
   void move(PVector dir) {
-    dir = dir.normalize();
     this.dir = new PVector(dir.x, dir.y);
     //acc.add(dir.mult(3));
-    vel.add(dir.mult(3));
+    vel.add(dir.mult(1));
   }
 
   void shoot() {
@@ -130,6 +129,10 @@ class enemy {
 
   void shoot(PVector aim) {
     bullets.add(new bullet(pos.x + w / 2, pos.y + h / 2, 20, aim, 15, "enemy"));
+  }
+
+  void update() {
+    pos.add(PVector.random2D().mult(2));
   }
 
   void show() {

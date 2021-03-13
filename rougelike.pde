@@ -1,4 +1,5 @@
 game g;
+boolean[] moveKeys = new boolean[4];
 void setup() {
   size(1200, 1200);
   g = new game();
@@ -7,20 +8,56 @@ void setup() {
 
 void draw() {
   background(255);
+  if (moveKeys[0]) g.p1.move(new PVector(0, -1));
+  if (moveKeys[1]) g.p1.move(new PVector(0, 1));
+  if (moveKeys[2]) g.p1.move(new PVector(-1, 0));
+  if (moveKeys[3]) g.p1.move(new PVector(1, 0));
   g.update();
 
 }
 
+//void keyPressed() {
+//  //if (key == 'W' || key == 'w') {
+//  //  g.p1.move(new PVector(0, -1));
+//  //}
+//  //if (key == 'S' || key == 's') {
+//  //  g.p1.move(new PVector(0, 1));
+//  //} 
+//  //if (key == 'A' || key == 'a') {
+//  //  g.p1.move(new PVector(-1, 0));
+//  //} 
+//  //if (key == 'D' || key == 'd') {
+//  //  g.p1.move(new PVector(1, 0));
+//  //} 
+//  }
+
+
+void setMovement(int k, boolean b) {
+  switch (k) {
+    case 'w':
+      moveKeys[0] = b;
+      break;
+    case 's':
+      moveKeys[1] = b;
+      break;
+    case 'a':
+      moveKeys[2] = b;
+      break;
+    case 'd':
+      moveKeys[3] = b;
+      break;
+
+  }
+
+}
+
 void keyPressed() {
-  if (key == 'W' || key == 'w') {
-    g.p1.move(new PVector(0, -1));
-  } else if (key == 'S' || key == 's') {
-    g.p1.move(new PVector(0, 1));
-  } else if (key == 'A' || key == 'a') {
-    g.p1.move(new PVector(-1, 0));
-  } else if (key == 'D' || key == 'd') {
-    g.p1.move(new PVector(1, 0));
-  } 
+  setMovement(key, true);
+
+}
+
+void keyReleased() {
+  setMovement(key, false);
 
 }
 

@@ -3,9 +3,9 @@ class game {
   level l1;
 
   game() {
-    p1 = new player(width / 2, height / 2, 10, 10);
+    p1 = new player(width / 2, height / 2, 0, 2);
     //r1 = new room("0123");
-    l1 = new level(20, 20);
+    l1 = new level(5, 5);
   }
 
   void update() {
@@ -75,33 +75,41 @@ class level {
 
 
   void createRooms() {
-    int n = 10;
-    int x = 10;
-    int y = 10;
-    rooms[x][y] = new room("1");
-    map[x][y] = "1";
-    int prevDir = -1;
-    int dir = -1;
-    for (int i = 0; i < n; i++) {
-      String roomType = rooms[x][y].type;
-      while (dir == prevDir)
-        dir = int("" + roomType.charAt(floor(random(roomType.length()))));
-      println(dir);
-      if (dir == 0) {
-        y -= 1;
-      } else if (dir == 1) {
-        x += 1;
-      } else if(dir == 2) {
-        y += 1;
-      } else if(dir == 3) {
-        x -= 1;
-      }
-      String newType = getNeighbors(x, y, dir);
-      rooms[x][y] = getMatchingRoom(newType);
-      map[x][y] = rooms[x][y].type;
-      prevDir = dir;
-    }
-    rooms[10][10].addEnemy(width / 2, height / 2);
+    rooms[0][2] = new room("1");
+    rooms[1][2] = new room("13");
+    rooms[2][2] = new room("0123");
+    rooms[2][2].addEnemy(width / 2, height / 2);
+    rooms[2][3] = new room("01");
+    rooms[3][3] = new room("30");
+    rooms[3][2] = new room("23");
+    rooms[2][1] = new room("2");
+    //int n = 10;
+    //int x = 10;
+    //int y = 10;
+    //rooms[x][y] = new room("1");
+    //map[x][y] = "1";
+    //int prevDir = -1;
+    //int dir = -1;
+    //for (int i = 0; i < n; i++) {
+    //  String roomType = rooms[x][y].type;
+    //  while (dir == prevDir)
+    //    dir = int("" + roomType.charAt(floor(random(roomType.length()))));
+    //  println(dir);
+    //  if (dir == 0) {
+    //    y -= 1;
+    //  } else if (dir == 1) {
+    //    x += 1;
+    //  } else if(dir == 2) {
+    //    y += 1;
+    //  } else if(dir == 3) {
+    //    x -= 1;
+    //  }
+    //  String newType = getNeighbors(x, y, dir);
+    //  rooms[x][y] = getMatchingRoom(newType);
+    //  map[x][y] = rooms[x][y].type;
+    //  prevDir = dir;
+    //}
+    //rooms[10][10].addEnemy(width / 2, height / 2);
   }
 
   String getNeighbors(int x, int y, int dir) {

@@ -3,6 +3,7 @@ String [] types = {"0123", "01", "12", "23", "30", "02", "13", "0", "1", "2", "3
 class room {
   String type = "";
   PImage roomImg;
+  PImage brick;
   int w = 16;
   int h = 16;
   float dw = width / w;
@@ -16,13 +17,15 @@ class room {
   }
 
   room(String s) {
+    brick = loadImage("brick.png");
     type = s;
     int turn = 0;
     if (s == "1" || s == "2" || s == "3") {
       turn = int(s);
       s = "0";
     } else if (s == "12" || s == "23" || s == "30") {
-      turn = int(s.charAt(0));
+      turn = int("" + s.charAt(0));
+      println(turn);
       s = "01";
     } else if (s == "13") {
       turn = 1;
@@ -89,14 +92,17 @@ class room {
   }
 
   void show(PVector playerPos) {
+    background(255);
     for (int i = 0; i < 16; i++) {
       for (int j = 0; j < 16; j++) {
-        fill(grid[i][j] * 255);
-        rect(i * dw, j * dw, dw, dh);
+        //fill(grid[i][j] * 255);
+        //rect(i * dw, j * dw, dw, dh);
+        if (grid[i][j] == 0) drawPixel(brick, i * dw, j * dh, dw, dh);
       }
     }
 
     for (enemy e : enemies) {
+      e.update();
       e.show();
       PVector aim = playerPos.sub(e.pos).normalize();
       e.shoot(aim);
@@ -153,6 +159,24 @@ room getMatchingRoom(String neighbors) {
     if (pickRoom) potential.add(type);
   }
   String res = potential.get(floor(random(potential.size())));
-  println(neighbors + ", " + res);
+  //println(neighbors + ", " + res);
   return new room(res);
+}
+
+void drawPixel(PImage img, float x, float y, float w, float h) {
+  float pW = img.width;
+  float pH = img.height;
+  float dw = w / pW;
+  float dh = h / pH;
+
+  noStroke();
+  for (int i = 0; i < pW; i++) {
+    for (int j = 0; j < pH; j++) {
+      fill(img.get(i, j));
+      rect(x + i * dw, y + j * dh, dw + 1, dh + 1);
+
+    }
+
+  }
+
 }
